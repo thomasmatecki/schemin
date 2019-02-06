@@ -130,6 +130,12 @@
 (define (sqrt2 x) (sqrt-iter2 1 0 x))
 
 
+; Exercise 1.8 (x/y^2+2y) / 3
+ 
+(define (cbrt-iter y prev-y x)
+  (if (not (changed-alot? y prev-y))
+      y
+      (cbrt-iter (/ (+ (/ x (square y)) (* 2 y)) 3) y x)))
 ; >>>> 1.9 here?
 
 
@@ -216,8 +222,8 @@
 (define (k n) (* 5 n n))
 
 (= (g 65536) (h 5))
-(= (g 16) (h 4)) ;
-(= (g 4) (h 3))  ;
+(= (g 16) (h 4))
+(= (g 4) (h 3))
 
 (= (h 4) (expt 2 (expt 2 (expt 2 2)))); 2^(2^(2^2) = 2^16
 (= (h 3) (expt 2 (expt 2 2))) ; 2^4
