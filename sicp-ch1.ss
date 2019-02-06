@@ -202,9 +202,8 @@
   (cond ((= y 0) 0)
         ((= x 0) (* 2 y))
         ((= y 1) 2)
-        (else (A (- x 1) (A x (- y 1))))))
-
-
+        (else (A (- x 1)
+                 (A x (- y 1))))))
 
 (= 1024 (A 1 10))
 (= 65536 (A 2 4))
@@ -217,16 +216,95 @@
 (define (k n) (* 5 n n))
 
 (= (g 65536) (h 5))
-(= (g 16) (h 4))
-(= (g 4) (h 3))
+(= (g 16) (h 4)) ;
+(= (g 4) (h 3))  ;
+
+(= (h 4) (expt 2 (expt 2 (expt 2 2)))); 2^(2^(2^2) = 2^16
+(= (h 3) (expt 2 (expt 2 2))) ; 2^4
+(= (h 2) (expt 2 2)); 2^2
+
+(define (check-h n)
+  (= (h n) (expt 2 (h (- n 1)))))
+; h(n+1) = 2^h(n)
+; h(n) = 2^h(n-1)
+; h(n+1) - 2^h(n) = 0
+; h(n) - 2^h(n-1) = 0
+; h(n+1) - 2^h(n) = h(n) - 2^h(n-1)
+(define (h0 n) (if (= n 0) 1 (expt 2 (h0 (- n 1)))))
 
 
+(define (fib n)
+  (fib-iter 1 0 n))
 
+(define (fib-iter a b count)
+  (if (= count 0)
+      b
+      (fib-iter (+ a b) a (- count 1))))
 
+;Tail recursive
+;(fib 7)
+;(fib-iter 1 0 7)
+;(fib-iter (+ 1 0) 1 6)
+;(fib-iter 1 1 6)
+;(fib-iter (+ 1 1) 1 5)
+;(fib-iter 2 1 5)
+;(fib-iter (+ 2 1) 2 4)
+;(fib-iter 3 2 4)
+;(fib-iter (+ 3 2) 3 3)
+;(fib-iter 5 3 3)
+;(fib-iter (+ 5 3) 5 2)
+;(fib-iter 8 5 2)
+;(fib-iter (+ 8 5) 8 1)
+;(fib-iter 13 8 1)
+;(fib-iter (+ 13 8) 13 0)
+;13
 
+(define (count-change amount)
+  (cc amount 5))
 
+(define (cc amount kinds-of-coins)
+  (cond ((= amount 0) 1) ; If a is exactly 0, we should count that as 1 way to make change.
+        ((or (< amount 0) (= kinds-of-coins 0)) 0)
+        (else (+ (cc amount(- kinds-of-coins 1));the number of ways to change amount a using all but the first kind of coin
+                 (cc (- amount (first-denomination kinds-of-coins))
+                     kinds-of-coins)) 
+              )))
 
+(define (first-denomination kinds-of-coins)
+  (cond ((= kinds-of-coins 1) 1)
+        ((= kinds-of-coins 2) 5)
+        ((= kinds-of-coins 3) 10)
+        ((= kinds-of-coins 4) 25)
+        ((= kinds-of-coins 5) 50)))
 
+; Given 10 , 5 , 1 coins, number of ways to change 17
+; - the number of ways to change amount a using all but the first kind of coin, plus
+; - the number of ways to change amount a - d using all n kinds of coins, where d is the denomination of the first kind of coin.
+; (num-ways 17 (10 , 5 , 1))
+; (+ (num-ways 17 (5  1))                  (num-ways 7 ( 10 , 5 , 1)))
+;    (+ (num-ways 17 (1) (num-ways 12 (1)) (+ (num-ways 7 (5 , 1) (num-ways -3 (5 , 1)))
 
+; Alternate to above, using car and cdr
+(define (change-ways amount denomxs)
+  (cond ((= amount 0) 1) ; If a is exactly 0, we should count that as 1 way to make change.
+        ((or (< amount 0) (null? denomxs)) 0)
+        (else (+ (change-ways amount (cdr denomxs))
+                 (change-ways (- amount (car denomxs)) denomxs)))))
 
+(= (change-ways 100 '(50 25 10 5 1)) 292)
 
+; Exercise 1.11
+; f (n - 1) + 2f (n - 2) + 3f (n - 3)
+(define (f-recursive n)
+  (if (< n 3)
+      n
+      (+ (f (- n 1))
+         (* 2 (f (- n 2)))
+         (* 3 (f (- n 3))))))
+
+;(define (f-iterative n)
+;  (iterate-f 0 n))
+
+;(define (iterate-f p1 p2 p3 n)
+; ....   (+ )
+  ;)
