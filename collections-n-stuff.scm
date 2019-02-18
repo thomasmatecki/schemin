@@ -98,6 +98,7 @@
 (define rd-map
   (ls-ducer map-k))
 
+;;
 ;; Take a reduction function(i.e. left or right-fold)
 ;; and a kernel...
 (define (over reduce kernel zero)
@@ -119,8 +120,9 @@
 (define o-all
   (over r-fold all-k #t))
 
+(define (range-asc start end)
+  (if (= start end)
+      nil
+      (cons start (range-asc (inc start) end))))
 
-(define (add3 x) (+ 3 x))
-
-
-(#%provide )
+(#%provide all o-all o-map range-asc)

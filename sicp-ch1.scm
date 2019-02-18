@@ -1,6 +1,8 @@
 #lang sicp
 
-(#%require "collections-n-stuff.scm")
+(#%require
+ "collections-n-stuff.scm"
+ "testin.scm")
 
 (define x 3) ; x is 3
 
@@ -345,3 +347,8 @@
 (define (f-test n)
   (= (f-recursive n)
      (f-iterative n)))
+
+(is-it-true?
+ "f-recursive and f-iterative produce the same result for n=0...99"
+ (all (o-map f-test (range-asc 0 100))))
+
