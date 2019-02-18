@@ -1,5 +1,9 @@
 #lang sicp
 
+(#%require
+ "collections-n-stuff.scm"
+ "testin.scm")
+
 (define x 3) ; x is 3
 
 (define (square x) (* x x))
@@ -128,3 +132,11 @@
       (sqrt-iter2 (improve guess x) guess x)))
 
 (define (sqrt2 x) (sqrt-iter2 1 0 x))
+
+
+; Exercise 1.8 (x/y^2+2y) / 3
+ 
+(define (cbrt-iter y prev-y x)
+  (if (not (changed-alot? y prev-y))
+      y
+      (cbrt-iter (/ (+ (/ x (square y)) (* 2 y)) 3) y x)))
