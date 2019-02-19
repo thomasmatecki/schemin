@@ -1,4 +1,10 @@
 #lang sicp
+
+
+(#%require
+ "collections-n-stuff.scm"
+ "testin.scm")
+
 ; >>>> 1.9 here?
 
 
@@ -173,52 +179,47 @@
 (define (f-recursive n)
   (if (< n 3)
       n
-      (+ (f (- n 1))
-         (* 2 (f (- n 2)))
-         (* 3 (f (- n 3))))))
+      (+ (f-recursive (- n 1))
+         (* 2 (f-recursive (- n 2)))
+         (* 3 (f-recursive (- n 3))))))
 
-;f(2) f(3) f(4) f(5)   f(6)  f(7)  f(8)
-;  2  66   130  218    330   466   626
-;   64  64    64    112   136   160
-;     0    24    24    24    24
 
-; So, for n > 2 initialize:
-; a <- 66
-; b <- 0
-; ... Iterate (n - 2) times:
-; a <- (a + 64 + b)
-; b <= (b + 24)
+; f(0) = 0
+; f(1) = 1
+; f(2) = 2
+; f(3) = f(2) + 2f(1) + 3f(0) 
+; f(4) = f(3) + 2f(2) + 3f(1)
 
-(define (iterate-f a b n)
-  (if (= n 2)
-      a
-      (iterate-f
-       (+ a 64 b)
-       (+ b 24)
-       (dec n))))
+
+; a <- 2b + a + c
+; b <- 2 * a
+; c <- 3 * b
+
+; n 0 1 2  3  4  5
+; +-------------------------
+; a 2 4 11 25 59 142 335
+; b 1 2 4  11 25 59  142 335
+; c 0 1 2  4  11 25  59  142 335
+
+(define (iterate-f a b c n)
+  (cond
+    ((< n 2) n)
+    ((= n 2) a)
+    (else (iterate-f
+          (+ a (* 2 b) c)
+          a
+          (* 3 b)
+          (dec n)))))
 
 (define (f-iterative n)
-  (if (< n 3)
-      n
-      (iterate-f 66 0 (dec n))))
+  (iterate-f 2 1 0 n))
 
 (define (f-test n)
   (= (f-recursive n)
      (f-iterative n)))
 
 (is-it-true?
- "f-recursive and f-iterative produce the same result for n=0...99"
- (all (o-map f-test (range-asc 0 100))))
+ "f-recursive and f-iterative produce the same result for n=0...19"
+ (all (o-map f-test (range-asc 0 20))))
 
-(define (pascal-recur rs ls)
-  (if (null? xs)
-      '(1)))
 
-(define ps '(1 3 3 1))
-
-(pascal-recur)
-
-; Exercise 1.12
-(define (next-pascals last)
-
-  )
