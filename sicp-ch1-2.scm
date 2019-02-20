@@ -176,6 +176,7 @@
 
 ; Exercise 1.11
 ; f(n - 1) + 2f(n - 2) + 3f(n - 3)
+; http://oeis.org/search?q=0%2C1%2C2%2C4%2C11%2C25%2C59%2C142%2C335&sort=&language=english&go=Search
 (define (f-recursive n)
   (if (< n 3)
       n
@@ -187,8 +188,26 @@
 ; f(0) = 0
 ; f(1) = 1
 ; f(2) = 2
-; f(3) = f(2) + 2f(1) + 3f(0) 
-; f(4) = f(3) + 2f(2) + 3f(1)
+; f(3) = f(2) + 2f(1) + 3f(0) = 1f(2) + 2f(1) + 0 = 4
+; f(4) = f(3) + 2f(2) + 3f(1) = 1f(2) + 2f(1) + 3f(0) + 2f(2) + 3f(1)
+;                             = 3f(2) + 5f(1) + 3f(0) = 11
+; f(5) = f(4) + 2f(3) + 3f(2) = 3f(2) + 5f(1) + 3f(0) + 2f(2) + 4f(1) + 6f(0) + 3f(2)
+;                             = 8f(2) + 9f(1) + 9f(0) = 25 
+; f(6) = f(5) + 2f(4) + 3f(3) = 8f(2) + 9f(1) + 9f(0) + 6f(2) + 10f(1) + 6f(0) + 3f(2) + 6f(1)
+;                             = 17f(2) + 25f(1) + 15f(0) = 59
+; f(7) = f(6) + 2f(5) + 3f(4) = 17f(2) + 25f(1) + 16f(2) + 18f(1) + 9f(2) + 15f(1)
+;                             = 42f(2) + 58f(1) = 44 + 58 = 142
+
+ 
+; a 1 3 8 17 42
+; b 2 5 9 25 58 ..?
+; 2
+; 5  = 2 +              [3]
+; 9  = 2 + 3 +          [4]
+; 25 = 2 + 3 + 4 +      [10 + 6]
+; 58 = 2 + 3 + 4 + 10 + [6 + 18 + 16]
+; a_{n+1} <- a_{n} + b_{n}
+; b_{n+1} <- ???
 
 
 ; a <- 2b + a + c
@@ -222,4 +241,83 @@
  "f-recursive and f-iterative produce the same result for n=0...19"
  (all (o-map f-test (range-asc 0 20))))
 
+; + r
+; c
+;   1
+;   1 1
+;   1 2 1
 
+(define (pascal r c)
+  (if (or (= 1 r) (= r c))
+      1
+      (+ (pascal (dec r) c)
+         (pascal (dec r) (dec c) ))))
+
+; Ex 1.15
+(define (cube x)
+  (* x x x))
+
+(define (p x)
+  (display "p called\n")
+  (- (* 3 x) (* 4 (cube x))))
+
+(define (sine angle)
+  (if (not (> (abs angle) 0.1))
+      angle
+      (p (sine (/ angle 3.0)))))
+
+; a) 5 times
+; b) log(a)?
+
+(define (fast-expt b n)
+  (cond ((= n 0) 1)
+        ((even? n) (square (fast-expt b (/ n 2))))
+        (else (* b (fast-expt b (- n 1))))))
+
+(define (even? n)
+  (= (remainder n 2) 0))
+
+(define (odd? n)
+  (not (even? n)))
+
+(define (square n) (* n n))
+
+; i <- a ; initialize a to 1
+; iterate if n > 0:
+;     if n is odd:
+;        a <- a * b
+;        n <-  n - 1 ; make n even
+;     otherwise:
+;        n <- n/2
+;        b <- b^2
+; so... ab^n = (ab)b^{n-1}          <- our "invariant quantity"
+;       ab^n = a(b^2)^{n/2}
+; E.g: 6^27 -
+; b = 6, n=27, a=1 
+; 
+
+; Exercise 1.16
+(define (fast-expt-iterate b n a)
+  (cond
+    ((= n 0) a)
+    ((odd? n) (fast-expt-iterate b (dec n) (* a b)))    ; ab^{n} = (ab)b^{n-1}
+    (else (fast-expt-iterate (square b) (/ n 2) a))))   ; ab^{n} = a(b^2)^{n/2}
+
+(define (iterative-fast-expt b n)
+  (fast-expt-iterate b n 1))
+
+
+; Exercise 1.17
+; Again, think of "invariant quantities" ....
+;       a + bc = (a + c) + (b - 1)c
+;              = a + (b/2)(2*c) = a + (b/2)(c + c)
+; ... half or decrement b until it is 1...
+(define (iterate-fast-mult a b c)
+  (cond
+    ((= b 1) (+ a c))
+    ((odd? b) (iterate-fast-mult (+ a c) (dec b) c))
+    (else (iterate-fast-mult a (/ b 2) (+ c c)))))
+
+(define (fast-mult a b)
+  (iterate-fast-mult 0 a b))
+  
