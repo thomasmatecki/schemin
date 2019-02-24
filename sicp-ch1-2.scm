@@ -1,13 +1,13 @@
-#lang sicp
+;#lang sicp
 
 
-(#%require
- "collections-n-stuff.scm"
- "testin.scm")
-
+(load "collections-n-stuff.scm")
+(load "testin.scm") 
 ; >>>> 1.9 here?
 
+(define (inc x) (+ x 1))
 
+(define (inc x) (- x 1))
 
 (define (factorial n)
   (if (= n 1)
@@ -237,9 +237,9 @@
   (= (f-recursive n)
      (f-iterative n)))
 
-(is-it-true?
- "f-recursive and f-iterative produce the same result for n=0...19"
- (all (o-map f-test (range-asc 0 20))))
+;(is-it-true?
+; "f-recursive and f-iterative produce the same result for n=0...19"
+; (all (o-map f-test (range-asc 0 20))))
 
 ; + r
 ; c
@@ -247,6 +247,7 @@
 ;   1 1
 ;   1 2 1
 
+(display "** mark**")
 (define (pascal r c)
   (if (or (= 1 r) (= r c))
       1
@@ -306,9 +307,8 @@
 (define (iterative-fast-expt b n)
   (fast-expt-iterate b n 1))
 
-
 ; Exercise 1.17
-; Again, think of "invariant quantities" ....
+; Again, think of an "invariant quantity" ....
 ;       a + bc = (a + c) + (b - 1)c
 ;              = a + (b/2)(2*c) = a + (b/2)(c + c)
 ; ... half or decrement b until it is 1...
@@ -320,4 +320,4 @@
 
 (define (fast-mult a b)
   (iterate-fast-mult 0 a b))
-  
+  jddddddd

@@ -1,6 +1,9 @@
-#lang sicp
+;lang sicp
+
+(define nil '())
 
 (define xs (list 4 2 391 394 29 19 31 1 384 ))
+(define (inc i) (+ i 1))
 
 ;; Simple Map
 (define (map op ls)
@@ -17,7 +20,7 @@
         (else (filter op? (cdr ls)))))
 
 ;; Lazy Let-Filter
-(define (lz-filter op? ls)
+(define (sc-filter op? ls)
   (let ((first (lambda nil (car ls)))
         (rest (lambda nil (cdr ls))))
     (cond ((null? ls) nil)
@@ -101,14 +104,14 @@
 ;;
 ;; Take a reduction function(i.e. left or right-fold)
 ;; and a kernel...
-(define (over reduce kernel zero)
+(define (over reducer kernel zero)
   (lambda (op ls)
-    (reduce
+    (reducer
      zero
      (kernel op)
      ls)))
 
-;; ... create Filter ...
+;; ... Create Filter ...
 (define o-filter
   (over r-fold filter-k nil))
 
@@ -125,4 +128,4 @@
       nil
       (cons start (range-asc (inc start) end))))
 
-(#%provide all o-all o-map range-asc)
+; (#%provide all o-all o-map range-asc)
