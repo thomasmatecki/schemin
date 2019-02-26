@@ -6,8 +6,7 @@
 ; >>>> 1.9 here?
 
 (define (inc x) (+ x 1))
-
-(define (inc x) (- x 1))
+(define (dec x) (- x 1))
 
 (define (factorial n)
   (if (= n 1)
@@ -247,7 +246,6 @@
 ;   1 1
 ;   1 2 1
 
-(display "** mark**")
 (define (pascal r c)
   (if (or (= 1 r) (= r c))
       1
@@ -307,7 +305,18 @@
 (define (iterative-fast-expt b n)
   (fast-expt-iterate b n 1))
 
-; Exercise 1.17
+; Excercise 1.17
+(define (half i) (/ i 2))
+(define (double i) (+ i i))
+
+(define (mult a b)
+  (if (zero? a)
+      0
+      (if (even? a)
+	  (double (mult (half a) b))   ; 2 * ( (a/2) b) = ab
+	  (+ (mult (dec a) b) b))))    ; (a - 1)b + b   = ab
+	  
+; Exercise 1.18
 ; Again, think of an "invariant quantity" ....
 ;       a + bc = (a + c) + (b - 1)c
 ;              = a + (b/2)(2*c) = a + (b/2)(c + c)
@@ -320,4 +329,34 @@
 
 (define (fast-mult a b)
   (iterate-fast-mult 0 a b))
-  jddddddd
+
+; Ex. 1.19
+;;>>>>>>>>
+;;<<<<<<<<
+
+
+(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (remainder a b))))
+
+;;(define (gcd-c a b conditional)
+;;  (conditional (= b 0)
+;;	       a
+;;	       (gcd b (remainder a b))))
+
+;; Ex 1.20
+;; (if (= b 0) a (gcd b (remainder a b))))
+;; * ------------------------------------*
+;; (gcd 206 40)
+;; (if (= 40 0) 206 (gcd 40 (remainder 206 40))))
+;; (if #f 206 (gcd 40 6)))
+;; (if #f 206 (if (= 6 0) 40 (gcd 6 (remainder 40 6))))))
+;; (if #f 206 (if #f 40 (gcd 6 4)))))
+;; (if #f 206 (if #f 40 (if (= 4 0) 6 (gcd 4 (remainder 6 4))))))))
+;; (if #f 206 (if #f 40 (if #f 6 (gcd 4 2)))))))
+;; (if #f 206 (if #f 40 (if #f 6 (if (= 2 0) 4 (gcd 2 (remainder 4 2)))))))))
+;; (if #f 206 (if #f 40 (if #f 6 (if #f 4 (gcd 2 0))))))))
+;; (if #f 206 (if #f 40 (if #f 6 (if #f 4 (if (= 0 0) 4 (gcd 4 (remainder 2 0)))))))))))
+;; (if #f 206 (if #f 40 (if #f 6 (if #f 4 (if #t 4 (gcd 4 (remainder 2 0)))))))))))
+;; ... so it goes on forever...
