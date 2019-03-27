@@ -1,8 +1,6 @@
-#lang sicp
 
-(#%require
- "collections-n-stuff.scm"
- "testin.scm")
+(load "collections-n-stuff.scm")
+(load"testin.scm")
 
 (define x 3) ; x is 3
 

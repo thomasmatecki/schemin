@@ -1,9 +1,27 @@
-;#lang sicp
-
 
 (load "collections-n-stuff.scm")
 (load "testin.scm") 
-; >>>> 1.9 here?
+; Ex. 1.9 
+(define (+ a b)
+  (if (= a 0)
+      b
+      (inc (+ (dec a) b))))
+
+;; (+ 4 5)
+;; (if (= 4 0) 5 (inc (+ (dec 4) 5))))
+;; (if #t 5 (inc (+ 3 5))))
+;; (inc (+ 3 5)))
+;; (inc (if (= 3 0) 5 (inc (+ (dec 3) 5))))
+;; (inc (inc (+ 2 5)))
+;; ...
+;; (inc (inc (inc (+ 1 5)))
+;; (inc (inc (inc (inc (+ 0 5))))))
+;; 9 <- this is recursive
+
+;;(define (+ a b)
+;;  (if (= a 0)
+;;      b
+;;      (+ (dec a) (inc b)))) <- iterative?
 
 (define (inc x) (+ x 1))
 (define (dec x) (- x 1))
@@ -23,7 +41,11 @@
                    (+ counter 1)
                    max-count)))
   (fact-iter 1 1 n)
-) ;, an iterative process is one whose state can be summarized by a fixed number of state variables,
+  )
+
+;; an iterative process is one whose state can be summarized by a
+;; fixed number of state variables,
+
 
 
  "As a consequence, these languages can describe iterative processes
@@ -331,8 +353,54 @@
   (iterate-fast-mult 0 a b))
 
 ; Ex. 1.19
-;;>>>>>>>>
-;;<<<<<<<<
+;; T: a <- a + b
+;;    b <- a
+;; If a_0 = 1, b_0 =0, then T^n is the Fibonacci sequence.
+;;
+;; Now consider T to be the special case T_{0 1} :
+;;     a <- b(1) + a(1) + a (1)
+;;     b <- b(0) + a(1)
+;; ..of T_{p q}  tranforming (a,b):
+;;     a <-bq + aq + ap
+;;     b <-bp + aq
+;; .. so let's apply such a tranformation twice:
+;;     a_2 <-b_1q + a_1q + a_1p
+;;     b_2 <-b_1p + a_1q
+;; .. .. ..
+;;     a_1 <-b_0q + a_0q + a_0p
+;;     b_1 <-b_0p + a_0q
+;; .. .. substituting ..
+;;     a_2 <- (b_0p + a_0q)q + (b_0q + a_0q + a_0p)q + (b_0q + a_0q + a_0p)p
+;;          = a_0(q^2 + q^2 + pq + qp + p^2) + b_0(pq + q^2 + qp) 
+;;          = a_0(2q^2 + 2pq +  p^2) + b_0(2pq + q^2p) 
+;;          = b_0(2pq + q^2p) + a_0(2pq + q^2) + a_0(q^2 + p^2)
+;;     b_2 <- (b_0p + a_0q)p + (b_0q + a_0q + a_0p)q
+;;          = b_0(p^2 + q^2) + a_0(qp + q^2 + pq) 
+;;          = b_0(p^2 + q^2) + a_0(2qp + q^2) 
+;;          = b_0(p^2 + q^2) + a_0(2qp + q^2) 
+;; ... so ...
+;; p' = (p^2 + q^2)
+;; q' = (2pq + q^2p) 
+;; ... So now we know how to "square" T
+
+(define (log-fib n)
+  (log-fib-iter 1 0 0 1 n))
+
+(define (log-fib-iter a b p q count)
+  (cond ((= count 0) b)
+	((even? count) ; Apply T^2
+	 (log-fib-iter a
+		   b
+		   (+ (* p p)         ; compute p
+		      (* q q)) 
+		   (+ (* 2 p q)       ; compute q
+		      (* q q p)) 
+		   (/ count 2)))
+	(else (log-fib-iter (+ (* b q) (* a q) (* a p)) ; Apply T once
+			(+ (* b p) (* a q))
+			p
+			q
+			(- count 1)))))
 
 
 (define (gcd a b)
