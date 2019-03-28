@@ -1,6 +1,5 @@
-
-(load "collections-n-stuff.scm")
-(load "testin.scm") 
+;;(load "collections-n-stuff.scm")
+;;(load "testin.scm") 
 ; Ex. 1.9 
 (define (+ a b)
   (if (= a 0)
@@ -53,7 +52,6 @@
   do, repeat, until, for, and while. e implementation of Scheme we
   shall consider in Chapter 5 does not share this defect."
 
-
 ; Exercise 1.9
 (define (add0 a b)
   (if (= a 0)
@@ -65,16 +63,16 @@
 ;(inc (inc (add0 2 5))))
 ;(inc (inc (inc (add0 1 5))))
 ;(inc (inc (inc (inc (add0 0 5)))))
-(inc (inc (inc (inc 5))))
+;(inc (inc (inc (inc 5))))
 ;(inc (inc (inc 6)))
 ;(inc (inc 7))
 ;(inc 8)
 ;9
 
-(define (add1 a b)
-  (if (= a 0)
-      b
-      (add1 (dec a) (inc b))))
+;; (define (add1 a b)
+;;   (if (= a 0)
+;;       b
+;;       (add1 (dec a) (inc b))))
 
 ;(add1 4 5)
 ;(add1 3 6)
@@ -118,6 +116,7 @@
 (= (h 4) (expt 2 (expt 2 (expt 2 2)))); 2^(2^(2^2) = 2^16
 (= (h 3) (expt 2 (expt 2 2))) ; 2^4
 (= (h 2) (expt 2 2)); 2^2
+
 
 (define (check-h n)
   (= (h n) (expt 2 (h (- n 1)))))
@@ -187,13 +186,12 @@
 
 ; Alternate to above, using car and cdr
 (define (change-ways amount denomxs)
-  (cond ((null? amount) '())
-        ((= amount 0) 1) ; If a is exactly 0, we should count that as 1 way to make change.
-        ((or (< amount 0) (null? denomxs)) 0)
-        (else (+ (change-ways amount (cdr denomxs))
-                 (change-ways (- amount (car denomxs)) denomxs)))))
+  (cond ((or (< amount 0) (null? denomxs)) 0)
+	((= 0 amount) 1)
+	(else (+ (change-ways amount (cdr denomxs))
+		 (change-ways (- amount (car denomxs)) denomxs)))))
 
-(= (change-ways 100 '(50 25 10 5 1)) 292)
+;;(= (change-ways 100 '(50 25 10 5 1)) 292)
 
 ; Exercise 1.11
 ; f(n - 1) + 2f(n - 2) + 3f(n - 3)
@@ -423,8 +421,13 @@
 ;; (if #f 206 (if #f 40 (gcd 6 4)))))
 ;; (if #f 206 (if #f 40 (if (= 4 0) 6 (gcd 4 (remainder 6 4))))))))
 ;; (if #f 206 (if #f 40 (if #f 6 (gcd 4 2)))))))
-;; (if #f 206 (if #f 40 (if #f 6 (if (= 2 0) 4 (gcd 2 (remainder 4 2)))))))))
+;; (if #f 206 (if #f 40 (If #f 6 (if (= 2 0) 4 (gcd 2 (remainder 4 2)))))))))
 ;; (if #f 206 (if #f 40 (if #f 6 (if #f 4 (gcd 2 0))))))))
 ;; (if #f 206 (if #f 40 (if #f 6 (if #f 4 (if (= 0 0) 4 (gcd 4 (remainder 2 0)))))))))))
 ;; (if #f 206 (if #f 40 (if #f 6 (if #f 4 (if #t 4 (gcd 4 (remainder 2 0)))))))))))
 ;; ... so it goes on forever...
+
+
+"Fermat’s Little Theorem: If n is a prime number and a is any positive 
+integer less than n, then a raised to the nth power is congruent to a 
+modulo n."
