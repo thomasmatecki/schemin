@@ -184,15 +184,7 @@
 ; (+ (num-ways 17 (5  1))                  (num-ways 7 ( 10 , 5 , 1)))
 ;    (+ (num-ways 17 (1) (num-ways 12 (1)) (+ (num-ways 7 (5 , 1) (num-ways -3 (5 , 1)))
 
-; Alternate to above, using car and cdr
-(define (change-ways amount denomxs)
-  (cond ((or (< amount 0) (null? denomxs)) 0)
-	((= 0 amount) 1)
-	(else (+ (change-ways amount (cdr denomxs))
-		 (change-ways (- amount (car denomxs)) denomxs)))))
-
-;;(= (change-ways 100 '(50 25 10 5 1)) 292)
-
+; Alternate to above, using car and cdr and in coins.scm
 ; Exercise 1.11
 ; f(n - 1) + 2f(n - 2) + 3f(n - 3)
 ; http://oeis.org/search?q=0%2C1%2C2%2C4%2C11%2C25%2C59%2C142%2C335&sort=&language=english&go=Search
@@ -430,4 +422,6 @@
 
 "Fermat’s Little Theorem: If n is a prime number and a is any positive 
 integer less than n, then a raised to the nth power is congruent to a 
-modulo n."
+modulo n.
+"
+;; a^n = n
